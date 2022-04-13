@@ -2,6 +2,7 @@ SOURCES_DIR		= 	./src
 SOURCES_FILES	=	philo.c\
 					ft_atoi.c\
 					parsing.c\
+					add_func.c
 
 
 
@@ -23,10 +24,10 @@ OBJECTS			= 	$(SOURCES:.c=.o)
 NAME			=	philo
 # NAME_BONUS		=	checker
 
-CC				=	gcc -g
+CC				=	gcc 
 RM				=	rm -f
 
-CFLAGS			=	-Wall -Wextra -Werror
+# CFLAGS			=	-Wall -Wextra -Werror
 
 .c.o:
 				$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)

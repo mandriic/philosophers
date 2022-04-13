@@ -29,11 +29,11 @@ int	main(int argc, char **argv)
 	pthread_t t1;
 	pthread_t t2;
 	pthread_t t3;
-	pthread_t t4;
+	pthread_t t4;d
 	gettimeofday(&cur_time, NULL);
 	time1 = cur_time.tv_sec;
 	time2 = cur_time.tv_sec;
-	time_in_mill =(cur_time.tv_sec) * 1000 + (cur_time.tv_usec) / 1000;
+	time_in_mill = (cur_time.tv_sec) * 1000 + (cur_time.tv_usec) / 1000;
 	int i = 0;
 	pthread_create(&t1, NULL, ft_secs, NULL);
 

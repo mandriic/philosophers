@@ -2,7 +2,10 @@ SOURCES_DIR		= 	./src
 SOURCES_FILES	=	philo.c\
 					ft_atoi.c\
 					parsing.c\
-					add_func.c
+					add_func.c\
+					func_philo.c\
+					create_list_pth.c\
+					
 
 
 

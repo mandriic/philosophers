@@ -13,18 +13,11 @@
 #include "philo.h"
 #include <limits.h>
 
-static void	ft_error(void)
-{
-	write(1, "Error\n", 6);
-	exit(1);
-}
 int	ft_atoi(const char *str)
 {
-	int	i;
+	int			i;
 	long long	pon;
 	long long	digi;
-	long long	ck;
-
 
 	i = 0;
 	pon = 1;
@@ -44,9 +37,5 @@ int	ft_atoi(const char *str)
 		digi = digi * 10 + (str[i] - '0');
 		i++;
 	}
-	ck = digi * pon;
-
-	if (ck > INT_MAX || ck < INT_MIN)
-		ft_error();
 	return (digi * pon);
 }

@@ -3,6 +3,7 @@
 int	main(int argc, char **argv)
 {
 	t_vars	vars;
+	pthread_t watch;
 
 	vars = (t_vars){};
 	if (argc < 5 || argc > 6)
@@ -18,7 +19,10 @@ int	main(int argc, char **argv)
 		printf("time_to_die\t>\t0\n[eats_iter]\t>\t0\n");
 		return (1);
 	}
-	
-
+	ft_create_list(&vars);
+	ft_create_pthread(&vars);
+	pthread_create(&watch, NULL, ft_watcher, (void *) &vars);
+	while(!vars.death)
+		usleep(1);
 	return (0);
 }

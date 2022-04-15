@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   add_func.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mandriic <mandriic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/15 10:05:36 by mandriic          #+#    #+#             */
+/*   Updated: 2022/04/15 10:05:39 by mandriic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 t_list	*ft_lstlast(t_list *lst)
@@ -31,12 +43,16 @@ t_list	*ft_lstnew(t_data *content)
 
 int	ft_check(t_list *l)
 {
+	long	diff_ct_le;
+	long	diff_ct_ts;
+
+	diff_ct_le = ft_2_ms(l->content->cur_time, l->content->last_eat);
+	diff_ct_ts = ft_2_ms(l->content->cur_time, l->content->time_start);
 	if ((l->content->last_eat.tv_sec
-			&& ft_2_ms(l->content->cur_time, l->content->last_eat)
-			> *l->content->time_to_die) || (l->content->time_start.tv_sec
+			&& diff_ct_le > *l->content->time_to_die)
+		|| (l->content->time_start.tv_sec
 			&& !l->content->last_eat.tv_sec
-			&& ft_2_ms(l->content->cur_time, l->content->time_start)
-			> *l->content->time_to_die))
+			&& diff_ct_ts > *l->content->time_to_die))
 		return (1);
 	return (0);
 }

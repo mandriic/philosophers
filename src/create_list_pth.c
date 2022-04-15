@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   create_list_pth.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mandriic <mandriic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/15 10:06:02 by mandriic          #+#    #+#             */
+/*   Updated: 2022/04/15 10:06:05 by mandriic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 void	ft_create_list(t_vars *vars)
 {
 	t_data	*data;
 	t_list	*temp;
-	t_list	*last;
 
 	vars->i = 1;
 	while (vars->i <= vars->num_philo)
@@ -21,6 +32,8 @@ void	ft_create_list(t_vars *vars)
 	}
 	temp = vars->list;
 	vars->last = ft_lstlast(vars->list);
+	vars->last->content->imlast = 1;
+	vars->list->content->imlast = -1;
 	if (vars->last != vars->list)
 		vars->last->next = vars->list;
 }
@@ -59,5 +72,6 @@ t_data	*ft_data(int id, t_vars *vars)
 	data->time_start.tv_sec = 0;
 	data->mut_print = &vars->mut_stdout;
 	data->started = 0;
+	data->need_eat = -1;
 	return (data);
 }

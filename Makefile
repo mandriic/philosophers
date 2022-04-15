@@ -5,7 +5,8 @@ SOURCES_FILES	=	philo.c\
 					add_func.c\
 					func_philo.c\
 					create_list_pth.c\
-					
+					forks.c
+
 
 
 
@@ -30,7 +31,7 @@ NAME			=	philo
 CC				=	gcc 
 RM				=	rm -f
 
-# CFLAGS			=	-Wall -Wextra -Werror
+CFLAGS			=	-Wall -Wextra -Werror
 
 .c.o:
 				$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)

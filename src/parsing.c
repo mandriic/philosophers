@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mandriic <mandriic@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/15 10:04:13 by mandriic          #+#    #+#             */
+/*   Updated: 2022/04/15 10:04:18 by mandriic         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 void	my_usleep(int ms)
@@ -17,9 +29,22 @@ void	my_usleep(int ms)
 
 void	ft_death(t_vars *vars, t_list *list, struct timeval t2)
 {
-	printf("%ld ms %d 1died\n ",
-		ft_2_ms(list->content->cur_time, t2), list->content->id);
+	long	diff;
+
+	diff = ft_2_ms(list->content->cur_time, t2);
+	printf("%ld ms %d died\n", diff, list->content->id);
 	vars->death = 1;
+}
+
+void	ft_need_eat(t_list *list, t_vars *vars)
+{
+	long	diff;
+
+	diff = ft_2_ms(list->content->last_eat, list->next->content->last_eat);
+	if (list == vars->list)
+		diff = ft_2_ms(vars->last->content->last_eat, list->content->last_eat);
+	if (diff > 0 || list->content->need_eat == -1)
+		list->content->need_eat = 1;
 }
 
 void	*ft_watcher(void *vars)
@@ -36,6 +61,7 @@ void	*ft_watcher(void *vars)
 		if (temp_list->content->time_start.tv_sec
 			|| temp_list->content->last_eat.tv_sec)
 		{
+			ft_need_eat(temp_list, vars_l);
 			pthread_mutex_lock(&temp_list->content->mut_last_eat);
 			gettimeofday(&temp_list->content->cur_time, NULL);
 			if (ft_check(temp_list))
@@ -47,6 +73,7 @@ void	*ft_watcher(void *vars)
 		}
 		temp_list = temp_list->next;
 	}
+	return (0);
 }
 
 int	pars_string(t_vars *vars, char **argv)

@@ -46,14 +46,18 @@ int	ft_check(t_list *l)
 	long	diff_ct_le;
 	long	diff_ct_ts;
 
+// printf("%d\n", l->content->my_iter_end);
 	diff_ct_le = ft_2_ms(l->content->cur_time, l->content->last_eat);
 	diff_ct_ts = ft_2_ms(l->content->cur_time, l->content->time_start);
 	if ((l->content->last_eat.tv_sec
-			&& diff_ct_le > *l->content->time_to_die)
+			&& diff_ct_le > *l->content->time_to_die && !l->content->fin)
 		|| (l->content->time_start.tv_sec
 			&& !l->content->last_eat.tv_sec
-			&& diff_ct_ts > *l->content->time_to_die))
+			&& diff_ct_ts > *l->content->time_to_die && !l->content->fin))
 		return (1);
+	// printf("eat iter 1%d eat iter 2%d myiter %d\n",*l->content->eat_iter, *l->content->eat_iter, l->content->c_iter);
+	if(*l->content->eat_iter != -1 && *l->content->eat_iter == l->content->c_iter)
+		return(2);
 	return (0);
 }
 

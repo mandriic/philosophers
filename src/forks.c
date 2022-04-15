@@ -17,11 +17,13 @@ void	ft_mut_fokrs(t_list *phil_data, int biger)
 	if (biger == 1)
 	{
 		pthread_mutex_lock(&phil_data->content->mut);
+		(void) phil_data->content->fork;
 		gettimeofday(&phil_data->content->time_now, NULL);
 	}
 	else
 	{
 		pthread_mutex_lock(&phil_data->next->content->mut);
+		(void) phil_data->next->content->fork;
 		gettimeofday(&phil_data->content->time_now, NULL);
 	}
 	pthread_mutex_lock(phil_data->content->mut_print);

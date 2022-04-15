@@ -18,24 +18,26 @@ void	ft_create_list(t_vars *vars)
 	t_list	*temp;
 
 	vars->i = 1;
-	while (vars->i <= vars->num_philo)
+	pthread_mutex_init(&vars->mut_stdout, NULL);
+	if (vars->num_philo != 1)
 	{
-		data = ft_data(vars->i, vars);
-		if (!vars->list)
-			vars->list = ft_lstnew((t_data *)data);
-		else
+		while (vars->i <= vars->num_philo)
 		{
-			vars->temp_tlist = ft_lstnew((t_data *)data);
-			ft_lstadd_back(&vars->list, vars->temp_tlist);
+			data = ft_data(vars->i, vars);
+			if (!vars->list)
+				vars->list = ft_lstnew((t_data *)data);
+			else if (vars->num_philo > 1)
+			{
+				vars->temp_tlist = ft_lstnew((t_data *)data);
+				ft_lstadd_back(&vars->list, vars->temp_tlist);
+			}
+			vars->i++;
 		}
-		vars->i++;
+		temp = vars->list;
+		vars->last = ft_lstlast(vars->list);
+		if (vars->last != vars->list)
+			vars->last->next = vars->list;
 	}
-	temp = vars->list;
-	vars->last = ft_lstlast(vars->list);
-	vars->last->content->imlast = 1;
-	vars->list->content->imlast = -1;
-	if (vars->last != vars->list)
-		vars->last->next = vars->list;
 }
 
 void	ft_create_pthread(t_vars *vars)
@@ -66,11 +68,20 @@ t_data	*ft_data(int id, t_vars *vars)
 	data->time_to_eat = &vars->t_2_eat;
 	data->time_to_die = &vars->t_2_die;
 	data->time_to_sleep = &vars->t_2_slp;
+	data->iters_end_p = &vars->iters_end;
+	vars->iters_end = 0;
+	data->eat_iter = &vars->eat_iter;
+	data->c_iter = 0;
+	data->death = &vars->death;
 	data->num_philo = &vars->num_philo;
+	data->end4watch_p = &vars->end4watch;
+	vars->end4watch = 0;
 	data->last_eat.tv_sec = 0;
 	data->last_eat.tv_usec = 0;
 	data->time_start.tv_sec = 0;
 	data->mut_print = &vars->mut_stdout;
+	data->my_iter_end = 0;
+	data->fin = 0;
 	data->started = 0;
 	data->need_eat = -1;
 	return (data);

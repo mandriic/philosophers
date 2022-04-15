@@ -34,8 +34,14 @@ typedef struct s_data
 	int				*time_to_eat;
 	int				*time_to_die;
 	int				*time_to_sleep;
+	int				*eat_iter;
 	int				*num_philo;
-	int				imlast;
+	int				*death;
+	int				*end4watch_p;
+	int				c_iter;
+	int				*iters_end_p;
+	int				fin;
+	int				my_iter_end;
 	struct timeval	time_start;
 	struct timeval	time_now;
 	struct timeval	cur_time;
@@ -59,8 +65,9 @@ typedef struct s_vars
 	int				t_2_eat;
 	int				t_2_slp;
 	int				eat_iter;
+	int				end4watch;
 	int				i;
-	int				lets_see;
+	int				iters_end;
 	int				death;
 	long			difcl;
 	long			difcs;

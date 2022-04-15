@@ -28,10 +28,10 @@ OBJECTS			= 	$(SOURCES:.c=.o)
 NAME			=	philo
 # NAME_BONUS		=	checker
 
-CC				=	gcc 
+CC				=	gcc -g
 RM				=	rm -f
 
-CFLAGS			=	-Wall -Wextra -Werror
+CFLAGS			=	-Wall -Wextra -Werror 
 
 .c.o:
 				$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)

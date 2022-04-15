@@ -12,6 +12,32 @@
 
 #include "philo.h"
 
+void ft_free_all(t_vars *vars, pthread_t *watch)
+{
+	vars->temp_tlist = vars->list;
+	while (1)
+	{
+		pthread_mutex_destroy(&vars->temp_tlist->content->mut);
+		pthread_mutex_destroy(&vars->temp_tlist->content->mut_last_eat);
+		pthread_join(vars->temp_tlist->content->philo, NULL);
+		if (vars->temp_tlist == vars->last)
+			break ;
+		vars->temp_tlist = vars->temp_tlist->next;
+	}
+	pthread_mutex_destroy(&vars->mut_stdout);
+	pthread_join(*watch, NULL);
+	vars->temp_tlist = vars->list;
+	while (1)
+	{
+		free(vars->temp_tlist->content);
+		if (vars->temp_tlist == vars->last)
+		{
+			free(vars->list);
+			break ;
+		}
+		vars->temp_tlist = vars->temp_tlist->next; 
+	}
+}
 int	main(int argc, char **argv)
 {
 	t_vars		vars;
@@ -35,6 +61,7 @@ int	main(int argc, char **argv)
 	ft_create_pthread(&vars);
 	pthread_create(&watch, NULL, ft_watcher, (void *) &vars);
 	while (!vars.death)
-		usleep(1);
+		usleep(10);
+	ft_free_all(&vars, &watch);
 	return (0);
 }

@@ -40,7 +40,7 @@ int	ft_create_list(t_vars *vars)
 	return (0);
 }
 
-void	ft_create_pthread(t_vars *vars)
+int	ft_create_pthread(t_vars *vars)
 {
 	t_list		*temp_list;
 	pthread_t	temp;
@@ -49,11 +49,13 @@ void	ft_create_pthread(t_vars *vars)
 	temp = vars->list->content->philo;
 	while (1)
 	{
-		pthread_create(&temp, NULL, ft_philos, (void *)temp_list);
+		if (pthread_create(&temp, NULL, ft_philos, (void *)temp_list) != 0)
+			return (1);
 		if (temp_list == vars->last)
 			break ;
 		temp_list = temp_list->next;
 	}
+	return (0);
 }
 
 t_data	*ft_data(int id, t_vars *vars)

@@ -18,8 +18,6 @@ int	ft_iter(t_list *phil_data)
 			phil_data->content->c_iter++;
 	if (phil_data->content->c_iter == *phil_data->content->eat_iter)
 	{
-		printf("%s %d %d\n", "end of iter", phil_data->content->id,
-			phil_data->content->c_iter);
 		phil_data->content->fin = 1;
 		*phil_data->content->iters_end_p = *phil_data->content->iters_end_p + 1;
 		return (0);

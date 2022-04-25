@@ -18,12 +18,12 @@ SOURCES_FILES	=	philo.c\
 					func_philo.c\
 					create_list_pth.c\
 					forks.c
-HEADER			=	philo.h
 
 SRC_DIR_BONUS	= 	./src_bonus
 SRC_FILES_BONUS	=	ft_atoi.c\
 					philo.c\
 					add_func.c\
+					sem_forks.c
 
 SOURCES			=	$(addprefix $(SOURCES_DIR)/, $(SOURCES_FILES))
 SOURCES_BONUS	=	$(addprefix $(SRC_DIR_BONUS)/, $(SRC_FILES_BONUS))
@@ -34,10 +34,10 @@ OBJECTS_BONUS	= 	$(SOURCES_BONUS:.c=.o)
 NAME			=	philo
 NAME_BONUS		=	philo_bonus
 
-CC				=	gcc -g -pthread
+CC				=	gcc
 RM				=	rm -f
 
-CFLAGS			=	-Wall -Wextra -Werror 	
+CFLAGS			=	-Wall -Wextra -Werror -pthread
 
 .c.o:
 				$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
@@ -67,4 +67,4 @@ fclean_bonus:	clean_bonus
 
 re_bonus:		fclean_bonus bonus
 
-.PHONY:		all clean fclean re
+.PHONY:		all bonus clean fclean re clean_bonus fclean_bonus re_bonus

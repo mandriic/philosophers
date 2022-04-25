@@ -39,6 +39,21 @@ void	ft_free_all(t_vars *vars, pthread_t *watch)
 	}
 }
 
+void	ft_print(int var)
+{
+	if (var == 1)
+	{
+		printf("Usage: ./philo number_of_philofers time_to_die ");
+		printf("time_to_eat time_to_sleep [times_to_eat]\n");
+	}
+	if (var == 2)
+	{
+		printf("Error\nphilosophers\t>=\t1\ntime_to_eat\t>\t0\n");
+		printf("time_to_sleep\t>\t0\n");
+		printf("time_to_die\t>\t0\n[eats_iter]\t>\t0\n");
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_vars		vars;
@@ -47,21 +62,20 @@ int	main(int argc, char **argv)
 	vars = (t_vars){};
 	if (argc < 5 || argc > 6)
 	{
-		printf("Usage: ./philo number_of_philofers time_to_die ");
-		printf("time_to_eat time_to_sleep [times_to_eat]\n");
+		ft_print(1);
 		return (0);
 	}
 	if (pars_string(&vars, &argv[1]) == 1)
 	{
-		printf("Error\nphilosophers\t>=\t1\ntime_to_eat\t>\t0\n");
-		printf("time_to_sleep\t>\t0\n");
-		printf("time_to_die\t>\t0\n[eats_iter]\t>\t0\n");
+		ft_print(2);
 		return (1);
 	}
 	if (ft_create_list(&vars))
 		return (0);
-	ft_create_pthread(&vars);
-	pthread_create(&watch, NULL, ft_watcher, (void *) &vars);
+	if (ft_create_pthread(&vars) == 1)
+		return (0);
+	if (pthread_create(&watch, NULL, ft_watcher, (void *) &vars) != 0)
+		return (0);
 	while (!vars.death)
 		usleep(10);
 	ft_free_all(&vars, &watch);

@@ -22,8 +22,8 @@
 # include <signal.h>
 # include <semaphore.h>
 # include <fcntl.h> 
-#include <sys/types.h>
-#include <sys/wait.h>      
+# include <sys/types.h>
+# include <sys/wait.h>      
 
 typedef struct s_data
 {
@@ -53,8 +53,8 @@ typedef struct s_vars
 	t_list			*list;
 	t_list			*temp_tlist;
 	t_list			*last;
-	sem_t 			*sem;
-	sem_t 			*sem4p;
+	sem_t			*sem;
+	sem_t			*sem4p;
 	int				main_pid;
 	struct timeval	cur_time;
 	int				num_philo;
@@ -70,6 +70,11 @@ typedef struct s_vars
 	long			difcs;
 }t_vars;
 
+void	ft_start_philo(t_vars *vars, t_list *tmp_list, int *i);
+void	ft_print_4norm(t_vars *vars, t_list *tmp_lst);
+void	ft_take_fork(t_vars *vars, t_list *tmp_lst, int *i);
+void	ft_create_forks(t_vars *vars);
+void	ft_create_sem(t_vars *vars);
 long	ft_2_ms(struct timeval time, struct timeval time2);
 int		ft_check(t_list *l);
 void	ft_mut_fokrs(t_list *phil_data, int biger);

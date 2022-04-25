@@ -85,7 +85,7 @@ void	*ft_philos(void *list);
 void	ft_unmut_forks(t_list *phil_data, int biger);
 void	*ft_philos(void *list);
 int		ft_create_list(t_vars *vars);
-void	ft_create_pthread(t_vars *vars);
+int		ft_create_pthread(t_vars *vars);
 void	my_usleep(int ms);
 t_data	*ft_data(int id, t_vars *vars);
 int		pars_string(t_vars *vars, char **argv);

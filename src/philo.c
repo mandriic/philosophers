@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void ft_free_all(t_vars *vars, pthread_t *watch)
+void	ft_free_all(t_vars *vars, pthread_t *watch)
 {
 	vars->temp_tlist = vars->list;
 	while (1)
@@ -35,9 +35,10 @@ void ft_free_all(t_vars *vars, pthread_t *watch)
 			free(vars->list);
 			break ;
 		}
-		vars->temp_tlist = vars->temp_tlist->next; 
+		vars->temp_tlist = vars->temp_tlist->next;
 	}
 }
+
 int	main(int argc, char **argv)
 {
 	t_vars		vars;
@@ -52,12 +53,13 @@ int	main(int argc, char **argv)
 	}
 	if (pars_string(&vars, &argv[1]) == 1)
 	{
-		printf("Error\nphilosophers\t>=\t2\ntime_to_eat\t>\t0\n");
+		printf("Error\nphilosophers\t>=\t1\ntime_to_eat\t>\t0\n");
 		printf("time_to_sleep\t>\t0\n");
 		printf("time_to_die\t>\t0\n[eats_iter]\t>\t0\n");
 		return (1);
 	}
-	ft_create_list(&vars);
+	if (ft_create_list(&vars))
+		return (0);
 	ft_create_pthread(&vars);
 	pthread_create(&watch, NULL, ft_watcher, (void *) &vars);
 	while (!vars.death)

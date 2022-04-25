@@ -45,3 +45,18 @@ void	ft_unmut_forks(t_list *phil_data, int biger)
 		pthread_mutex_unlock(&phil_data->next->content->mut);
 	}
 }
+
+void	my_usleep(int ms)
+{
+	struct timeval	time_start;
+	struct timeval	time_now;
+
+	gettimeofday(&time_now, NULL);
+	gettimeofday(&time_start, NULL);
+	while ((time_now.tv_sec - time_start.tv_sec) * 1000
+		+ (time_now.tv_usec - time_start.tv_usec) / 1000 < ms)
+	{
+		usleep(10);
+		gettimeofday(&time_now, NULL);
+	}
+}

@@ -12,41 +12,42 @@
 
 #include "philo.h"
 
+int	ft_iter(t_list *phil_data)
+{
+	if (*phil_data->content->eat_iter != -1)
+			phil_data->content->c_iter++;
+	if (phil_data->content->c_iter == *phil_data->content->eat_iter)
+	{
+		printf("%s %d %d\n", "end of iter", phil_data->content->id,
+			phil_data->content->c_iter);
+		phil_data->content->fin = 1;
+		*phil_data->content->iters_end_p = *phil_data->content->iters_end_p + 1;
+		return (0);
+	}
+	return (1);
+}
+
 void	ft_phil_do(t_list *phil_data)
 {
 	while (!*phil_data->content->death)
 	{
-		// if (phil_data->content->need_eat)
-		// {	
-			if (phil_data->content->fork > phil_data->next->content->fork)
-				ft_mut_fokrs(phil_data, 1);
-			else
-				ft_mut_fokrs(phil_data, 0);
-			if (phil_data->content->fork > phil_data->next->content->fork)
-				ft_mut_fokrs(phil_data, 0);
-			else
-				ft_mut_fokrs(phil_data, 1);
-			ft_last_eat(phil_data);
-			my_usleep(*phil_data->content->time_to_eat);
-			if (phil_data->content->fork > phil_data->next->content->fork)
-				ft_unmut_forks(phil_data, 1);
-			else
-				ft_unmut_forks(phil_data, 0);
-			ft_sleep_thin(phil_data);
-		// }
-		if (*phil_data->content->eat_iter != -1)
-		{
-			phil_data->content->c_iter++;
-			printf("%s\n", "+");
-		}
-		if (phil_data->content->c_iter == *phil_data->content->eat_iter)
-		{
-			printf("%s %d %d\n", "end of iter", phil_data->content->id, phil_data->content->c_iter);
-			phil_data->content->fin = 1;
-			// *phil_data->content->end4watch_p = 1;
-			*phil_data->content->iters_end_p = *phil_data->content->iters_end_p + 1;
-			break;
-		}
+		if (phil_data->content->fork > phil_data->next->content->fork)
+			ft_mut_fokrs(phil_data, 1);
+		else
+			ft_mut_fokrs(phil_data, 0);
+		if (phil_data->content->fork > phil_data->next->content->fork)
+			ft_mut_fokrs(phil_data, 0);
+		else
+			ft_mut_fokrs(phil_data, 1);
+		ft_last_eat(phil_data);
+		my_usleep(*phil_data->content->time_to_eat);
+		if (phil_data->content->fork > phil_data->next->content->fork)
+			ft_unmut_forks(phil_data, 1);
+		else
+			ft_unmut_forks(phil_data, 0);
+		ft_sleep_thin(phil_data);
+		if (!ft_iter(phil_data))
+			break ;
 	}
 }
 

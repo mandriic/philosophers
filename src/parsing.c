@@ -12,21 +12,6 @@
 
 #include "philo.h"
 
-void	my_usleep(int ms)
-{
-	struct timeval	time_start;
-	struct timeval	time_now;
-
-	gettimeofday(&time_now, NULL);
-	gettimeofday(&time_start, NULL);
-	while ((time_now.tv_sec - time_start.tv_sec) * 1000
-		+ (time_now.tv_usec - time_start.tv_usec) / 1000 < ms)
-	{
-		usleep(10);
-		gettimeofday(&time_now, NULL);
-	}
-}
-
 void	ft_death(t_vars *vars, t_list *list, struct timeval t2)
 {
 	long	diff;
@@ -50,30 +35,26 @@ void	ft_need_eat(t_list *list, t_vars *vars)
 void	*ft_watcher(void *vars)
 {
 	t_list			*temp_list;
-	struct timeval	time_start;
-	t_vars			*vars_l;
 
-	vars_l = vars;
-	temp_list = vars_l->list;
-	gettimeofday(&time_start, NULL);
-	while (*temp_list->content->iters_end_p != vars_l->num_philo)
+	temp_list = ((t_vars *)vars)->list;
+	gettimeofday(&((t_vars *)vars)->time_start, NULL);
+	while (*temp_list->content->iters_end_p != ((t_vars *)vars)->num_philo)
 	{
-		
 		if (temp_list->content->time_start.tv_sec
 			|| temp_list->content->last_eat.tv_sec)
 		{
-			ft_need_eat(temp_list, vars_l);
+			ft_need_eat(temp_list, ((t_vars *)vars));
 			pthread_mutex_lock(&temp_list->content->mut_last_eat);
 			gettimeofday(&temp_list->content->cur_time, NULL);
 			if (ft_check(temp_list) == 1)
 			{
-				ft_death(vars, temp_list, time_start);
+				ft_death(((t_vars *)vars), temp_list,
+					((t_vars *)vars)->time_start);
 				break ;
 			}
 			pthread_mutex_unlock(&temp_list->content->mut_last_eat);
-
 		}
-		if (*temp_list->content->iters_end_p == vars_l->num_philo)
+		if (*temp_list->content->iters_end_p == ((t_vars *)vars)->num_philo)
 			*temp_list->content->death = 1;
 		temp_list = temp_list->next;
 	}
@@ -100,9 +81,9 @@ int	pars_string(t_vars *vars, char **argv)
 			break ;
 	}
 	if (vars->num_philo == 1)
-		printf("%d ms 1 die\n", vars->t_2_die);
+		printf("%d ms ONLY ONE FORK EXISTS 1 die\n", vars->t_2_die);
 	if (vars->num_philo <= 1 || vars->t_2_die <= 0
-		|| vars->t_2_eat <= 0 || vars->t_2_slp < 0)
+		|| vars->t_2_eat <= 0 || vars->t_2_slp <= 0)
 		return (1);
 	if (vars->i == 5 && vars->eat_iter <= 0)
 		return (1);

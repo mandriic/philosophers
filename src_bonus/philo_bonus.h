@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <sys/time.h>
 # include <stdio.h>
@@ -19,16 +19,20 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdarg.h>
+# include <signal.h>
+# include <semaphore.h>
+# include <fcntl.h> 
+#include <sys/types.h>
+#include <sys/wait.h>      
 
 typedef struct s_data
 {
 	int				id;
-	pthread_mutex_t	mut;
-	pthread_mutex_t	mut_last_eat;
-	pthread_mutex_t	*mut_print;
-	pthread_t		philo;
+	int				my_id;
+	int				pid;
 	int				fork;
 	int				started;
+	struct timeval	last_eat;
 	int				need_eat;
 	int				*time_to_eat;
 	int				*time_to_die;
@@ -40,9 +44,8 @@ typedef struct s_data
 	int				c_iter;
 	int				*iters_end_p;
 	int				fin;
-	struct timeval	time_start;
-	struct timeval	last_eat;
 	int				my_iter_end;
+	struct timeval	time_start;
 	struct timeval	time_now;
 	struct timeval	cur_time;
 }t_data;
@@ -57,10 +60,14 @@ typedef struct s_vars
 {
 	t_list			*list;
 	t_list			*temp_tlist;
+	t_list			*temp_tlist2;
 	t_list			*last;
+	sem_t 			*sem;
+	sem_t 			*sem4p;
+	int				main_pid;
+	int				main_pid_2;
+	int				status;
 	struct timeval	cur_time;
-	struct timeval	time_start;
-	pthread_mutex_t	mut_stdout;
 	int				num_philo;
 	int				t_2_die;
 	int				t_2_eat;
@@ -74,7 +81,6 @@ typedef struct s_vars
 	long			difcs;
 }t_vars;
 
-int		ft_iter(t_list *phil_data);
 long	ft_2_ms(struct timeval time, struct timeval time2);
 int		ft_check(t_list *l);
 long	ft_2_ms(struct timeval time, struct timeval time2);
@@ -84,12 +90,12 @@ void	ft_mut_fokrs(t_list *phil_data, int biger);
 void	*ft_philos(void *list);
 void	ft_unmut_forks(t_list *phil_data, int biger);
 void	*ft_philos(void *list);
-int		ft_create_list(t_vars *vars);
+void	ft_create_list(t_vars *vars);
 void	ft_create_pthread(t_vars *vars);
 void	my_usleep(int ms);
 t_data	*ft_data(int id, t_vars *vars);
 int		pars_string(t_vars *vars, char **argv);
-int		ft_atoi(const char *str);
+int		ft_atoi_bonus(const char *str);
 t_list	*ft_lstlast(t_list *lst);
 void	ft_lstadd_back(t_list **lst, t_list *new);
 t_list	*ft_lstnew(t_data *content);

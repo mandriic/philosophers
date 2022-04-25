@@ -33,18 +33,11 @@ long	ft_2_ms(struct timeval time, struct timeval time2)
 {
 	long	ms;
 	long	ms2;
-	// printf("2 ms%ld\n", time.tv_sec);
-	// printf("2ms %ld\n", time2.tv_sec);
 
 	ms = time.tv_sec * 1000 + time.tv_usec / 1000;
 	ms2 = time2.tv_sec * 1000 + time2.tv_usec / 1000;
-		// printf("ms-- %ld\n", ms);
-	// printf("ms2-- %ld\n", ms2);
-	// printf("DIIIIFFF%ld\n", ms - ms2 );
 	return (ms - ms2);
 }
-
-
 
 void	my_usleep(int ms)
 {
@@ -75,34 +68,16 @@ int	ft_check(t_list *l)
 	long	diff_ct_le;
 	long	diff_ct_ts;
 
-// printf("%d\n", l->content->my_iter_end);
 	gettimeofday(&l->content->cur_time, NULL);
 	diff_ct_le = ft_2_ms(l->content->cur_time, l->content->last_eat);
 	diff_ct_ts = ft_2_ms(l->content->cur_time, l->content->time_start);
-	// printf("cur time %dlast eat\n", l->content->last_eat.tv_usec);
-	// printf("cur time %dtime staart\n", l->content->time_start.tv_usec );
-	// printf("cur time %ld d[fff\n", diff_ct_le );
-	// printf("cur time %ld gitttffff\n", diff_ct_ts );
 	if ((l->content->last_eat.tv_sec
 			&& diff_ct_le > *l->content->time_to_die && !l->content->fin)
 		|| (l->content->time_start.tv_sec
 			&& !l->content->last_eat.tv_sec
 			&& diff_ct_ts > *l->content->time_to_die && !l->content->fin))
 		return (1);
-	// printf("eat iter 1%d eat iter 2%d myiter %d\n",*l->content->eat_iter, *l->content->eat_iter, l->content->c_iter);
 	if(*l->content->eat_iter != -1 && *l->content->eat_iter == l->content->c_iter)
 		return(2);
 	return (0);
-}
-
-
-void	ft_need_eat(t_list *list, t_vars *vars)
-{
-	long	diff;
-
-	diff = ft_2_ms(list->content->last_eat, list->next->content->last_eat);
-	if (list == vars->list)
-		diff = ft_2_ms(vars->last->content->last_eat, list->content->last_eat);
-	if (diff > 0 || list->content->need_eat == -1)
-		list->content->need_eat = 1;
 }

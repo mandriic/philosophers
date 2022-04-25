@@ -18,25 +18,17 @@ t_data	*ft_data(int id, t_vars *vars)
 
 	data = malloc(sizeof(t_data));
 	data->id = id;
-	data->fork = id;
 	data->time_to_eat = &vars->t_2_eat;
 	data->time_to_die = &vars->t_2_die;
 	data->time_to_sleep = &vars->t_2_slp;
-	data->iters_end_p = &vars->iters_end;
-	vars->iters_end = 0;
 	data->eat_iter = &vars->eat_iter;
 	data->c_iter = 0;
-	data->death = &vars->death;
 	data->num_philo = &vars->num_philo;
-	data->end4watch_p = &vars->end4watch;
 	vars->end4watch = 0;
 	data->last_eat.tv_sec = 0;
 	data->last_eat.tv_usec = 0;
 	data->time_start.tv_sec = 0;
-	data->my_iter_end = 0;
 	data->fin = 0;
-	data->started = 0;
-	data->need_eat = -1;
 	return (data);
 }
 
@@ -95,59 +87,18 @@ int	pars_string(t_vars *vars, char **argv)
 		return (1);
 	return (0);
 }
-int ft_create_forks(t_vars *vars)
+
+void	ft_start_philo(t_vars *vars, t_list *tmp_list, int *i)
 {
-	t_list	*tmp_list;
-		int i = 0;
 
-	tmp_list = vars->list;
-
-	while (1)	
-	{
-		if(tmp_list == vars->last)
-			break ;
-		tmp_list->content->pid = fork();
-		if (tmp_list->content->pid == 0)
-			break ;
-		tmp_list = tmp_list->next;
-	}
-	gettimeofday(&tmp_list->content->time_start, NULL);
-	while(1)
-	{
-
-	if (*tmp_list->content->eat_iter == i)
-	{
-		sem_wait(vars->sem4p);
-		printf("%ld ms %d end of %d eating \n", ft_2_ms(tmp_list->content->time_now, tmp_list->content->time_start),  tmp_list->content->id, i);
-		sem_post(vars->sem4p);
-		waitpid(-1, NULL, WNOHANG); //WNOHANG
-		exit(0);
-	}
-		sem_wait(vars->sem);
-	sem_wait(vars->sem);
-	sem_wait(vars->sem4p);
-		gettimeofday(&tmp_list->content->time_now, NULL);
-		printf("%ld ms %d has taken a fork 1 \n", ft_2_ms(tmp_list->content->time_now, tmp_list->content->time_start), tmp_list->content->id);
-		gettimeofday(&tmp_list->content->time_now, NULL);
-		printf("%ld ms %d has taken a fork 2 \n", ft_2_ms(tmp_list->content->time_now, tmp_list->content->time_start), tmp_list->content->id);
-	sem_post(vars->sem4p);
-	gettimeofday(&tmp_list->content->time_now, NULL);
-	if(ft_check(tmp_list) == 1)
-	{
-		sem_wait(vars->sem4p);
-		printf("%ld ms %d DIED \n", ft_2_ms(tmp_list->content->time_now, tmp_list->content->time_start),  tmp_list->content->id);
-		kill (0, 15);
-		sem_wait(vars->sem4p);
-		exit(0);
-		}
 	gettimeofday(&tmp_list->content->last_eat, NULL);
-	my_usleep(*tmp_list->content->time_to_eat);
-	if (*tmp_list->content->eat_iter != -1)
-		i++;
 	sem_wait(vars->sem4p);
 	gettimeofday(&tmp_list->content->time_now, NULL);
 	printf("%ld ms %d eating \n", ft_2_ms(tmp_list->content->time_now, tmp_list->content->time_start), tmp_list->content->id);
 	sem_post(vars->sem4p);
+	my_usleep(*tmp_list->content->time_to_eat);
+	if (*tmp_list->content->eat_iter != -1)
+		*i = *i + 1;
 	sem_post(vars->sem);
 	sem_post(vars->sem);
 	sem_wait(vars->sem4p);
@@ -159,6 +110,72 @@ int ft_create_forks(t_vars *vars)
 	gettimeofday(&tmp_list->content->time_now, NULL);
 	printf("%ld ms %d thinking\n", ft_2_ms(tmp_list->content->time_now, tmp_list->content->time_start),  tmp_list->content->id);
 	sem_post(vars->sem4p);
+}
+
+void	ft_take_fork(t_vars *vars, t_list *tmp_lst, int *i)
+{
+	while(1)
+	{
+		if (*tmp_lst->content->eat_iter == *i)
+			exit(0);
+		sem_wait(vars->sem);
+		sem_wait(vars->sem);
+		sem_wait(vars->sem4p);
+		gettimeofday(&tmp_lst->content->time_now, NULL);
+		printf("%ld ms %d has taken a fork 1 \n",
+			ft_2_ms(tmp_lst->content->time_now, tmp_lst->content->time_start),
+			tmp_lst->content->id);
+		gettimeofday(&tmp_lst->content->time_now, NULL);
+		printf("%ld ms %d has taken a fork 2 \n",
+			ft_2_ms(tmp_lst->content->time_now, tmp_lst->content->time_start),
+			tmp_lst->content->id);
+		sem_post(vars->sem4p);
+		gettimeofday(&tmp_lst->content->time_now, NULL);
+		if (ft_check(tmp_lst) == 1)
+	{
+		sem_wait(vars->sem4p);
+		printf("%ld ms %d DIED \n", ft_2_ms(tmp_lst->content->time_now,
+			tmp_lst->content->time_start), tmp_lst->content->id);
+		kill (0, 15);
+	}
+		ft_start_philo(vars, tmp_lst, i);
+	}
+}
+
+void	ft_create_forks(t_vars *vars)
+{
+	t_list	*tmp_lst;
+	int i = 0;
+
+	tmp_lst = vars->list;
+	while (1)	
+	{
+		if(tmp_lst == vars->last)
+			break ;
+		tmp_lst->content->pid = fork();
+		if (tmp_lst->content->pid == 0)
+			break ;
+		tmp_lst = tmp_lst->next;
+	}
+	gettimeofday(&tmp_lst->content->time_start, NULL);
+	ft_take_fork(vars, tmp_lst, &i);
+}
+
+void	ft_create_sem(t_vars *vars)
+{
+	vars->sem = sem_open ("sem", O_CREAT | O_EXCL, 0644, vars->num_philo);
+	vars->sem4p = sem_open ("sem4p", O_CREAT | O_EXCL, 0644, 1);
+	sem_unlink("sem");
+	sem_unlink("sem4p");
+	vars->main_pid = fork();
+	if (vars->main_pid == 0)
+		ft_create_forks(vars);
+	else
+	{
+		waitpid(0, NULL, 0);
+		sem_close(vars->sem4p);
+		sem_close(vars->sem);
+		kill(0, 15);
 	}
 }
 
@@ -182,20 +199,6 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	ft_create_list(&vars);
-	vars.sem = sem_open ("sem", O_CREAT | O_EXCL, 0644, vars.num_philo);
-	vars.sem4p = sem_open ("sem4p", O_CREAT | O_EXCL, 0644, 1);
-	sem_unlink("sem");
-	sem_unlink("sem4p");
-	vars.main_pid = fork();
-	if (vars.main_pid == 0)
-		ft_create_forks(&vars);
-    else
-    { 
-    	waitpid(0, NULL, 0);
-		sem_close(vars.sem4p);
-		sem_close(vars.sem);
-		kill(0, 15);
-		exit(0);
-	}
+	ft_create_sem(&vars);
 	return (0);
 }

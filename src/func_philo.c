@@ -29,19 +29,19 @@ void	ft_phil_do(t_list *phil_data)
 {
 	while (!*phil_data->content->death)
 	{
-		// if (phil_data->content->fork > phil_data->next->content->fork)
+		if (phil_data->content->fork > phil_data->next->content->fork)
 			ft_mut_fokrs(phil_data, 1);
-		// else
+		else
 		 	ft_mut_fokrs(phil_data, 0);
-		// if (phil_data->content->fork > phil_data->next->content->fork)
-			// ft_mut_fokrs(phil_data, 0);
-		// else
-			// ft_mut_fokrs(phil_data, 1);
+		if (phil_data->content->fork > phil_data->next->content->fork)
+			ft_mut_fokrs(phil_data, 0);
+		else
+			ft_mut_fokrs(phil_data, 1);
 		ft_last_eat(phil_data);
 		my_usleep(*phil_data->content->time_to_eat);
-		// if (phil_data->content->fork > phil_data->next->content->fork)
-			// ft_unmut_forks(phil_data, 1);
-		// else
+		if (phil_data->content->fork > phil_data->next->content->fork)
+			ft_unmut_forks(phil_data, 1);
+		else
 			ft_unmut_forks(phil_data, 0);
 		ft_sleep_thin(phil_data);
 		if (!ft_iter(phil_data))

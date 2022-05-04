@@ -28,14 +28,17 @@ void	ft_need_eat(t_list *list, t_vars *vars)
 	diff = ft_2_ms(list->content->last_eat, list->next->content->last_eat);
 	if (list == vars->list)
 		diff = ft_2_ms(vars->last->content->last_eat, list->content->last_eat);
+	pthread_mutex_lock(&((t_vars *)vars)->mut_ndet);
 	if (diff > 0 || list->content->need_eat == -1)
 		list->content->need_eat = 1;
+	pthread_mutex_lock(&((t_vars *)vars)->mut_ndet);
 }
 
 void	*ft_watcher(void *vars)
 {
 	t_list			*temp_list;
 
+	pthread_mutex_init(&((t_vars *)vars)->mut_ndet, NULL);
 	temp_list = ((t_vars *)vars)->list;
 	gettimeofday(&((t_vars *)vars)->time_start, NULL);
 	while (*temp_list->content->iters_end_p != ((t_vars *)vars)->num_philo)
@@ -43,7 +46,9 @@ void	*ft_watcher(void *vars)
 		if (temp_list->content->time_start.tv_sec
 			|| temp_list->content->last_eat.tv_sec)
 		{
+			pthread_mutex_lock(&((t_vars *)vars)->mut_ndet);
 			ft_need_eat(temp_list, ((t_vars *)vars));
+			pthread_mutex_unlock(&((t_vars *)vars)->mut_ndet);
 			pthread_mutex_lock(&temp_list->content->mut_last_eat);
 			gettimeofday(&temp_list->content->cur_time, NULL);
 			if (ft_check(temp_list) == 1)

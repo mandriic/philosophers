@@ -37,7 +37,7 @@ NAME_BONUS		=	philo_bonus
 CC				=	gcc
 RM				=	rm -f
 
-CFLAGS			=	-Wall -Wextra -Werror -pthread
+CFLAGS			=	-Wall -Wextra -Werror -pthread -fsanitize=thread
 
 .c.o:
 				$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)

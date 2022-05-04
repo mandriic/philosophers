@@ -61,6 +61,7 @@ typedef struct s_vars
 	struct timeval	cur_time;
 	struct timeval	time_start;
 	pthread_mutex_t	mut_stdout;
+	pthread_mutex_t	mut_ndet;
 	int				num_philo;
 	int				t_2_die;
 	int				t_2_eat;

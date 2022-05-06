@@ -78,6 +78,6 @@ int	main(int argc, char **argv)
 		return (0);
 	while (!vars.death)
 		usleep(10);
-	ft_free_all(&vars, &watch);
+	// ft_free_all(&vars, &watch);
 	return (0);
 }

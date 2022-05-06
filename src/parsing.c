@@ -81,7 +81,7 @@ int	pars_string(t_vars *vars, char **argv)
 			break ;
 	}
 	if (vars->num_philo == 1)
-		printf("%d ms ONLY ONE FORK EXISTS 1 die\n", vars->t_2_die);
+		printf("%d ms 1 die\n", vars->t_2_die);
 	if (vars->num_philo <= 1 || vars->t_2_die <= 0
 		|| vars->t_2_eat <= 0 || vars->t_2_slp <= 0)
 		return (1);

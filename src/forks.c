@@ -14,21 +14,24 @@
 
 void	ft_mut_fokrs(t_list *phil_data, int biger)
 {
+	long test;
+
 	if (biger == 1)
 	{
 		pthread_mutex_lock(&phil_data->content->mut);
 		(void) phil_data->content->fork;
-		gettimeofday(&phil_data->content->time_now, NULL);
 	}
 	else
 	{
 		pthread_mutex_lock(&phil_data->next->content->mut);
 		(void) phil_data->next->content->fork;
-		gettimeofday(&phil_data->content->time_now, NULL);
 	}
+	gettimeofday(&phil_data->content->time_now, NULL);
+
 	pthread_mutex_lock(phil_data->content->mut_print);
-	printf("%ld ms %d has taken a fork \n", ft_2_ms(phil_data->content->time_now,
-			phil_data->content->time_start), phil_data->content->id);
+		test = ft_2_ms(phil_data->content->time_now,
+			phil_data->content->time_start);
+	printf("%ld ms %d has taken a fork \n", test, phil_data->content->id);
 	pthread_mutex_unlock(phil_data->content->mut_print);
 }
 
@@ -38,6 +41,7 @@ void	ft_unmut_forks(t_list *phil_data, int biger)
 	{
 		pthread_mutex_unlock(&phil_data->next->content->mut);
 		pthread_mutex_unlock(&phil_data->content->mut);
+
 	}
 	else
 	{
@@ -56,7 +60,7 @@ void	my_usleep(int ms)
 	while ((time_now.tv_sec - time_start.tv_sec) * 1000
 		+ (time_now.tv_usec - time_start.tv_usec) / 1000 < ms)
 	{
-		usleep(10);
 		gettimeofday(&time_now, NULL);
+		usleep(10);
 	}
 }

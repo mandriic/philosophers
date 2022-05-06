@@ -34,10 +34,10 @@ OBJECTS_BONUS	= 	$(SOURCES_BONUS:.c=.o)
 NAME			=	philo
 NAME_BONUS		=	philo_bonus
 
-CC				=	gcc
+CC				=	gcc -pthread -Wall -Wextra -Werror 
 RM				=	rm -f
 
-CFLAGS			=	-Wall -Wextra -Werror -pthread
+# CFLAGS			=	-Wall -Wextra -Werror  -fsanitize=thread
 
 .c.o:
 				$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)

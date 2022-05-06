@@ -46,9 +46,9 @@ int	ft_create_pthread(t_vars *vars)
 	pthread_t	temp;
 
 	temp_list = vars->list;
-	temp = vars->list->content->philo;
 	while (1)
-	{
+	{	
+		temp = temp_list->content->philo;
 		if (pthread_create(&temp, NULL, ft_philos, (void *)temp_list) != 0)
 			return (1);
 		if (temp_list == vars->last)

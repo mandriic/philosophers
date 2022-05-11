@@ -48,6 +48,7 @@ void	*ft_watcher(void *vars)
 			gettimeofday(&temp_list->content->cur_time, NULL);
 			if (ft_check(temp_list) == 1)
 			{
+				pthread_mutex_lock(temp_list->content->mut_print);
 				ft_death(((t_vars *)vars), temp_list,
 					((t_vars *)vars)->time_start);
 				break ;

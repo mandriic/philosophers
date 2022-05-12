@@ -55,8 +55,8 @@ void	*ft_philos(void *list)
 
 	phil_data = list;
 	gettimeofday(&phil_data->content->time_start, NULL);
-	if (phil_data->content->id % 2 == 1)
-		my_usleep(60);
+	if (phil_data->content->id % 2 == 0)
+		my_usleep(phil_data->content->time_to_eat - 50);
 	ft_phil_do(phil_data);
 	return (0);
 }

@@ -63,9 +63,9 @@ int	ft_check(t_data *l, t_vars *vars)
 			&& !l->last_eat.tv_sec
 			&& diff_ct_ts > *l->time_to_die && !l->fin))
 		return (1);
-	if (*l->eat_iter != -1 && *l->eat_iter
-		== l->c_iter)
-		return (2);
+	// if (*l->eat_iter != -1 && *l->eat_iter
+	// 	== l->c_iter)
+	// 	return (2);
 	return (0);
 }
 

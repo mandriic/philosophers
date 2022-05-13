@@ -77,7 +77,7 @@ int	main(int argc, char **argv)
 	if (pthread_create(&watch, NULL, ft_watcher, (void *) &vars) != 0)
 		return (0);
 	while (!vars.death)
-		usleep(10);
+		my_usleep(10);
 		// sleep(100);
 	// ft_free_all(&vars, &watch);
 	return (0);

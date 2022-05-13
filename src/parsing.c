@@ -40,10 +40,13 @@ void	*ft_watcher(void *vars_l)
 	vars = (t_vars *)vars_l;
 	// temp_list = ((t_vars *)vars)->list;
 	int i = 0;
-	while (vars->iters_end != vars->num_philo)
+	while (1)
 	{
+		// printf("vars-end%d\n", vars->iters_end);
+
 		if (vars->list[i]->time_s)
 		{
+		// printf("vars-end%d\n", vars->iters_end);
 
 
 			// ft_need_eat(vars->list[i], &vars);
@@ -53,6 +56,7 @@ void	*ft_watcher(void *vars_l)
 	// pthread_mutex_lock(&vars->list[i]->mut_last_eat);
 			if (ft_check(vars->list[i], vars) == 1)
 			{
+
 				pthread_mutex_lock(&vars->mut_stdout);
 				ft_death(vars, vars->list[i],
 					vars->list[i]->time_s);
@@ -63,13 +67,21 @@ void	*ft_watcher(void *vars_l)
 			// pthread_mutex_unlock(&vars->list[i]->mut_prio_l);
 
 		}
+		// printf("vars-end%d\n", vars->iters_end);
 		if (vars->iters_end == vars->num_philo)
+		{
 			vars->death = 1;
+			break ;
+		}
+		// printf("death %d\n", vars->death);
 		if (i == vars->num_philo - 1)
 		{
 			i = -1;
-			my_usleep(9);
+			// my_usleep(9);
 		}
+
+	// printf("wath\n");
+		my_usleep(1);
 		i++;
 	}
 	return (0);

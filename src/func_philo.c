@@ -20,6 +20,7 @@ int	ft_iter(t_data *phil_data)
 	{
 		phil_data->fin = 1;
 		*phil_data->iters_end_p = *phil_data->iters_end_p + 1;
+		// printf("iters%d\n", *phil_data->iters_end_p);
 		return (0);
 	}
 	return (1);
@@ -82,10 +83,10 @@ void	ft_last_eat(t_data *phil_data)
 void	ft_sleep_thin(t_data *phil_data)
 {
 	gettimeofday(&phil_data->time_now, NULL);
-	// pthread_mutex_lock(phil_data->mut_print);
+	pthread_mutex_lock(phil_data->mut_print);
 	phil_data->time_n = ft_2_ms(phil_data->time_now);
 	printf("%ld ms %d sleeping\n", phil_data->time_n - phil_data->time_s, phil_data->id);
-	// pthread_mutex_unlock(phil_data->mut_print);
+	pthread_mutex_unlock(phil_data->mut_print);
 	my_usleep(*phil_data->time_to_sleep);
 	gettimeofday(&phil_data->time_now, NULL);
 	phil_data->time_n = ft_2_ms(phil_data->time_now);

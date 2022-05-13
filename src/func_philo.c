@@ -73,10 +73,10 @@ void	ft_last_eat(t_data *phil_data)
 	// phil_data->need_eat = 0;
 	pthread_mutex_unlock(&phil_data->mut_last_eat);
 	gettimeofday(&phil_data->time_now, NULL);
-	// pthread_mutex_lock(phil_data->mut_print);
 	phil_data->time_n = ft_2_ms(phil_data->time_now);
+	pthread_mutex_lock(phil_data->mut_print);
 	printf("%ld ms %d eating\n", phil_data->time_n - phil_data->time_s, phil_data->id);
-	// pthread_mutex_unlock(phil_data->mut_print);
+	pthread_mutex_unlock(phil_data->mut_print);
 }
 
 void	ft_sleep_thin(t_data *phil_data)
@@ -89,7 +89,7 @@ void	ft_sleep_thin(t_data *phil_data)
 	my_usleep(*phil_data->time_to_sleep);
 	gettimeofday(&phil_data->time_now, NULL);
 	phil_data->time_n = ft_2_ms(phil_data->time_now);
-	// pthread_mutex_lock(phil_data->mut_print);
+	pthread_mutex_lock(phil_data->mut_print);
 	printf("%ld ms %d thinking\n", phil_data->time_n - phil_data->time_s, phil_data->id);
-	// pthread_mutex_unlock(phil_data->mut_print);
+	pthread_mutex_unlock(phil_data->mut_print);
 }

@@ -20,21 +20,19 @@ void	ft_mut_fokrs(t_data *phil_data, int biger)
 		pthread_mutex_lock(&phil_data->mut);
 		//  printf("lock1 %d\n", phil_data->id);
 
-		(void) phil_data->fork;
 	}
 	else
 	{
 		pthread_mutex_lock(phil_data->mut_n);
 		// printf("lock2 %d\n", (phil_data + 1)->id);
 
-		(void) (phil_data + 1)->fork;
 	}
 	gettimeofday(&phil_data->time_now, NULL);
 
-	// pthread_mutex_lock(phil_data->mut_print);
 		phil_data->time_n = ft_2_ms(phil_data->time_now);
+	pthread_mutex_lock(phil_data->mut_print);
 	printf("%ld ms %d has taken a fork \n", phil_data->time_n - phil_data->time_s, phil_data->id);
-	// pthread_mutex_unlock(phil_data->mut_print);
+	pthread_mutex_unlock(phil_data->mut_print);
 }
 
 void	ft_unmut_forks(t_data *phil_data, int biger)

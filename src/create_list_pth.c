@@ -41,7 +41,7 @@ int	ft_create_list(t_vars *vars)
 	vars->last = vars->list[vars->num_philo - 1];
 	vars->list[vars->num_philo]= vars->list[0];
 	int i = 0;
-	while (i <= vars->num_philo)
+	while (i <= vars->num_philo - 1)
 	{
 	vars->list[i]->mut_n = &vars->list[i + 1]->mut;
 	// printf("test %d\n", vars->list[i]->id);

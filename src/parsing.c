@@ -12,52 +12,65 @@
 
 #include "philo.h"
 
-void	ft_death(t_vars *vars, t_list *list, struct timeval t2)
+void	ft_death(t_vars *vars, t_data *list, long t2)
 {
 	long	diff;
 
-	diff = ft_2_ms(list->content->cur_time, t2);
-	printf("%ld ms %d died\n", diff, list->content->id);
+	vars->gen_time_ms = ft_2_ms(vars->cur_time);
+	diff = vars->gen_time_ms - t2;
+	printf("%ld ms %d died\n", diff, list->id);
 	vars->death = 1;
 }
 
-void	ft_need_eat(t_list *list, t_vars *vars)
+// void	ft_need_eat(t_data *list, t_vars *vars)
+// {
+// 	long	diff;
+
+// 	diff = ft_2_ms(list->last_eat, (list + 1)->last_eat);
+// 	if (list == vars->list[0])
+// 		diff = ft_2_ms(vars->last->last_eat, list->last_eat);
+// 	if (diff > 0 || list->need_eat == -1)
+// 		list->need_eat = 1;
+// }
+
+void	*ft_watcher(void *vars_l)
 {
-	long	diff;
-
-	diff = ft_2_ms(list->content->last_eat, list->next->content->last_eat);
-	if (list == vars->list)
-		diff = ft_2_ms(vars->last->content->last_eat, list->content->last_eat);
-	if (diff > 0 || list->content->need_eat == -1)
-		list->content->need_eat = 1;
-}
-
-void	*ft_watcher(void *vars)
-{
-	t_list			*temp_list;
-
-	temp_list = ((t_vars *)vars)->list;
-	gettimeofday(&((t_vars *)vars)->time_start, NULL);
-	while (*temp_list->content->iters_end_p != ((t_vars *)vars)->num_philo)
+	// t_data			*temp_list;
+	t_vars		*vars;
+	vars = (t_vars *)vars_l;
+	// temp_list = ((t_vars *)vars)->list;
+	int i = 0;
+	while (vars->iters_end != vars->num_philo)
 	{
-		if (temp_list->content->time_start.tv_sec
-			|| temp_list->content->last_eat.tv_sec)
+		if (vars->list[i]->time_s)
 		{
-			ft_need_eat(temp_list, ((t_vars *)vars));
-			pthread_mutex_lock(&temp_list->content->mut_last_eat);
-			gettimeofday(&temp_list->content->cur_time, NULL);
-			if (ft_check(temp_list) == 1)
+
+
+			// ft_need_eat(vars->list[i], &vars);
+			gettimeofday(&vars->cur_time, NULL);
+	// 			pthread_mutex_lock(&vars->list[i]->mut_prio_l);
+	// pthread_mutex_lock(&vars->list[i]->mut_prio_h);
+	// pthread_mutex_lock(&vars->list[i]->mut_last_eat);
+			if (ft_check(vars->list[i], vars) == 1)
 			{
-				pthread_mutex_lock(temp_list->content->mut_print);
-				ft_death(((t_vars *)vars), temp_list,
-					((t_vars *)vars)->time_start);
+				pthread_mutex_lock(&vars->mut_stdout);
+				ft_death(vars, vars->list[i],
+					vars->list[i]->time_s);
 				break ;
 			}
-			pthread_mutex_unlock(&temp_list->content->mut_last_eat);
+			// pthread_mutex_unlock(&vars->list[i]->mut_last_eat);
+			// pthread_mutex_unlock(&vars->list[i]->mut_prio_h);
+			// pthread_mutex_unlock(&vars->list[i]->mut_prio_l);
+
 		}
-		if (*temp_list->content->iters_end_p == ((t_vars *)vars)->num_philo)
-			*temp_list->content->death = 1;
-		temp_list = temp_list->next;
+		if (vars->iters_end == vars->num_philo)
+			vars->death = 1;
+		if (i == vars->num_philo - 1)
+		{
+			i = -1;
+			my_usleep(9);
+		}
+		i++;
 	}
 	return (0);
 }
@@ -82,7 +95,7 @@ int	pars_string(t_vars *vars, char **argv)
 			break ;
 	}
 	if (vars->num_philo == 1)
-		printf("%d ms 1 die\n", vars->t_2_die);
+		printf("%ld ms 1 die\n", vars->t_2_die);
 	if (vars->num_philo <= 1 || vars->t_2_die <= 0
 		|| vars->t_2_eat <= 0 || vars->t_2_slp <= 0)
 		return (1);

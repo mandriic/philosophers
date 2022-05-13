@@ -12,32 +12,32 @@
 
 #include "philo.h"
 
-void	ft_free_all(t_vars *vars, pthread_t *watch)
-{
-	vars->temp_tlist = vars->list;
-	while (1)
-	{
-		pthread_mutex_destroy(&vars->temp_tlist->content->mut);
-		pthread_mutex_destroy(&vars->temp_tlist->content->mut_last_eat);
-		pthread_join(vars->temp_tlist->content->philo, NULL);
-		if (vars->temp_tlist == vars->last)
-			break ;
-		vars->temp_tlist = vars->temp_tlist->next;
-	}
-	pthread_mutex_destroy(&vars->mut_stdout);
-	pthread_join(*watch, NULL);
-	vars->temp_tlist = vars->list;
-	while (1)
-	{
-		free(vars->temp_tlist->content);
-		if (vars->temp_tlist == vars->last)
-		{
-			free(vars->list);
-			break ;
-		}
-		vars->temp_tlist = vars->temp_tlist->next;
-	}
-}
+// void	ft_free_all(t_vars *vars, pthread_t *watch)
+// {
+// 	vars->temp_tlist = vars->list;
+// 	while (1)
+// 	{
+// 		pthread_mutex_destroy(&vars->temp_tlist->content->mut);
+// 		pthread_mutex_destroy(&vars->temp_tlist->content->mut_last_eat);
+// 		pthread_join(vars->temp_tlist->content->philo, NULL);
+// 		if (vars->temp_tlist == vars->last)
+// 			break ;
+// 		vars->temp_tlist = vars->temp_tlist->next;
+// 	}
+// 	pthread_mutex_destroy(&vars->mut_stdout);
+// 	pthread_join(*watch, NULL);
+// 	vars->temp_tlist = vars->list;
+// 	while (1)
+// 	{
+// 		free(vars->temp_tlist->content);
+// 		if (vars->temp_tlist == vars->last)
+// 		{
+// 			free(vars->list);
+// 			break ;
+// 		}
+// 		vars->temp_tlist = vars->temp_tlist->next;
+// 	}
+// }
 
 void	ft_print(int var)
 {
@@ -58,7 +58,7 @@ int	main(int argc, char **argv)
 {
 	t_vars		vars;
 	pthread_t	watch;
-
+	vars.death = 0;
 	vars = (t_vars){};
 	if (argc < 5 || argc > 6)
 	{
@@ -78,6 +78,7 @@ int	main(int argc, char **argv)
 		return (0);
 	while (!vars.death)
 		usleep(10);
+		// sleep(100);
 	// ft_free_all(&vars, &watch);
 	return (0);
 }

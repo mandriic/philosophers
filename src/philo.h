@@ -24,15 +24,21 @@ typedef struct s_data
 {
 	int				id;
 	pthread_mutex_t	mut;
+	pthread_mutex_t	*mut_n;
 	pthread_mutex_t	mut_last_eat;
+	pthread_mutex_t	mut_prio_l;
+	pthread_mutex_t	mut_prio_h;
 	pthread_mutex_t	*mut_print;
 	pthread_t		philo;
 	int				fork;
 	int				started;
 	int				need_eat;
-	int				*time_to_eat;
-	int				*time_to_die;
-	int				*time_to_sleep;
+	long			*time_to_eat;
+	long			*time_to_die;
+	long			*time_to_sleep;
+	long 			time_s;
+	long 			time_n;
+	long 			time_last_e;
 	int				*eat_iter;
 	int				*num_philo;
 	int				*death;
@@ -47,24 +53,26 @@ typedef struct s_data
 	struct timeval	cur_time;
 }t_data;
 
-typedef struct s_list
-{
-	t_data			*content;
-	struct s_list	*next;
-}t_list;
+// typedef struct s_list
+// {
+// 	t_data			*content;
+// 	struct s_list	*next;
+// }t_list;
 
 typedef struct s_vars
 {
-	t_list			*list;
-	t_list			*temp_tlist;
-	t_list			*last;
+	t_data			**list;
+	// t_list			*list;
+	// t_list			*temp_tlist;
+	t_data			*last;
 	struct timeval	cur_time;
 	struct timeval	time_start;
 	pthread_mutex_t	mut_stdout;
 	int				num_philo;
-	int				t_2_die;
-	int				t_2_eat;
-	int				t_2_slp;
+	long				t_2_die;
+	long				t_2_eat;
+	long				t_2_slp;
+	long	gen_time_ms;
 	int				eat_iter;
 	int				end4watch;
 	int				i;
@@ -74,24 +82,22 @@ typedef struct s_vars
 	long			difcs;
 }t_vars;
 
-int		ft_iter(t_list *phil_data);
-long	ft_2_ms(struct timeval time, struct timeval time2);
-int		ft_check(t_list *l);
-long	ft_2_ms(struct timeval time, struct timeval time2);
-void	ft_last_eat(t_list *phil_data);
-void	ft_sleep_thin(t_list *phil_data);
-void	ft_mut_fokrs(t_list *phil_data, int biger);
+// int		ft_iter(t_data *phil_data);
+long	ft_2_ms(struct timeval time);
+int		ft_check(t_data *l, t_vars *vars);
+void	ft_last_eat(t_data *phil_data);
+void	ft_sleep_thin(t_data *phil_data);
+void	ft_mut_fokrs(t_data *phil_data, int biger);
 void	*ft_philos(void *list);
-void	ft_unmut_forks(t_list *phil_data, int biger);
-void	*ft_philos(void *list);
+void	ft_unmut_forks(t_data *phil_data, int biger);
 int		ft_create_list(t_vars *vars);
 int		ft_create_pthread(t_vars *vars);
 void	my_usleep(int ms);
 t_data	*ft_data(int id, t_vars *vars);
 int		pars_string(t_vars *vars, char **argv);
 int		ft_atoi(const char *str);
-t_list	*ft_lstlast(t_list *lst);
-void	ft_lstadd_back(t_list **lst, t_list *new);
-t_list	*ft_lstnew(t_data *content);
+// t_data	*ft_lstlast(t_data *lst);
+// void	ft_lstadd_back(t_data **lst, t_data *new);
+// t_data	*ft_lstnew(t_data *content);
 void	*ft_watcher(void *vars);
 #endif

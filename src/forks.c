@@ -1,52 +1,57 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   forks.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mandriic <mandriic@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/15 10:26:29 by mandriic          #+#    #+#             */
-/*   Updated: 2022/04/15 10:26:32 by mandriic         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+// /* ************************************************************************** */
+// /*                                                                            */
+// /*                                                        :::      ::::::::   */
+// /*   forks.c                                            :+:      :+:    :+:   */
+// /*                                                    +:+ +:+         +:+     */
+// /*   By: mandriic <mandriic@student.42.fr>          +#+  +:+       +#+        */
+// /*                                                +#+#+#+#+#+   +#+           */
+// /*   Created: 2022/04/15 10:26:29 by mandriic          #+#    #+#             */
+// /*   Updated: 2022/04/15 10:26:32 by mandriic         ###   ########.fr       */
+// /*                                                                            */
+// /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_mut_fokrs(t_list *phil_data, int biger)
+void	ft_mut_fokrs(t_data *phil_data, int biger)
 {
-	long test;
 
 	if (biger == 1)
 	{
-		pthread_mutex_lock(&phil_data->content->mut);
-		(void) phil_data->content->fork;
+		pthread_mutex_lock(&phil_data->mut);
+		//  printf("lock1 %d\n", phil_data->id);
+
+		(void) phil_data->fork;
 	}
 	else
 	{
-		pthread_mutex_lock(&phil_data->next->content->mut);
-		(void) phil_data->next->content->fork;
-	}
-	gettimeofday(&phil_data->content->time_now, NULL);
+		pthread_mutex_lock(phil_data->mut_n);
+		// printf("lock2 %d\n", (phil_data + 1)->id);
 
-	pthread_mutex_lock(phil_data->content->mut_print);
-		test = ft_2_ms(phil_data->content->time_now,
-			phil_data->content->time_start);
-	printf("%ld ms %d has taken a fork \n", test, phil_data->content->id);
-	pthread_mutex_unlock(phil_data->content->mut_print);
+		(void) (phil_data + 1)->fork;
+	}
+	gettimeofday(&phil_data->time_now, NULL);
+
+	// pthread_mutex_lock(phil_data->mut_print);
+		phil_data->time_n = ft_2_ms(phil_data->time_now);
+	printf("%ld ms %d has taken a fork \n", phil_data->time_n - phil_data->time_s, phil_data->id);
+	// pthread_mutex_unlock(phil_data->mut_print);
 }
 
-void	ft_unmut_forks(t_list *phil_data, int biger)
+void	ft_unmut_forks(t_data *phil_data, int biger)
 {
 	if (biger == 1)
 	{
-		pthread_mutex_unlock(&phil_data->next->content->mut);
-		pthread_mutex_unlock(&phil_data->content->mut);
+		//  printf("unlock1 %d\n", (phil_data + 1)->id);
+		pthread_mutex_unlock(phil_data->mut_n);
+		pthread_mutex_unlock(&phil_data->mut);
 
 	}
 	else
 	{
-		pthread_mutex_unlock(&phil_data->content->mut);
-		pthread_mutex_unlock(&phil_data->next->content->mut);
+		//  printf("unlock2 %d\n",(phil_data + 1)->id);
+
+		pthread_mutex_unlock(&phil_data->mut);
+		pthread_mutex_unlock(phil_data->mut_n);
 	}
 }
 
@@ -54,13 +59,19 @@ void	my_usleep(int ms)
 {
 	struct timeval	time_start;
 	struct timeval	time_now;
-
+	long diff = 0;
+	long time_s;
+	long time_n;
 	gettimeofday(&time_now, NULL);
 	gettimeofday(&time_start, NULL);
-	while ((time_now.tv_sec - time_start.tv_sec) * 1000
-		+ (time_now.tv_usec - time_start.tv_usec) / 1000 < ms)
+	time_s = ft_2_ms(time_start);
+	while ( diff < ms)
 	{
-		gettimeofday(&time_now, NULL);
 		usleep(10);
+		gettimeofday(&time_now, NULL);
+		time_n = ft_2_ms(time_now);
+		diff = time_n - time_s;
+
+
 	}
 }

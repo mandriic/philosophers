@@ -12,60 +12,64 @@
 
 #include "philo.h"
 
-t_list	*ft_lstlast(t_list *lst)
-{
-	if (!lst)
-		return (NULL);
-	while (lst->next != NULL)
-		lst = lst->next;
-	return (lst);
-}
+// t_list	*ft_lstlast(t_list *lst)
+// {
+// 	if (!lst)
+// 		return (NULL);
+// 	while (lst->next != NULL)
+// 		lst = lst->next;
+// 	return (lst);
+// }
 
-void	ft_lstadd_back(t_list **lst, t_list *new)
-{
-	if (*lst == NULL)
-		*lst = new;
-	else
-		ft_lstlast(*lst)->next = new;
-}
+// void	ft_lstadd_back(t_list **lst, t_list *new)
+// {
+// 	if (*lst == NULL)
+// 		*lst = new;
+// 	else
+// 		ft_lstlast(*lst)->next = new;
+// }
 
-t_list	*ft_lstnew(t_data *content)
-{
-	t_list	*list;
+// t_list	*ft_lstnew(t_data)
+// {
+// 	t_list	*list;
 
-	list = malloc(sizeof(t_list));
-	if (NULL == list)
-		return (0);
-	(*list).content = content;
-	(*list).next = NULL;
-	return (list);
-}
+// 	list = malloc(sizeof(t_list));
+// 	if (NULL == list)
+// 		return (0);
+// 	(*list ;
+// 	(*list).next = NULL;
+// 	return (list);
+// }
 
-int	ft_check(t_list *l)
+int	ft_check(t_data *l, t_vars *vars)
 {
 	long	diff_ct_le;
 	long	diff_ct_ts;
-
-	diff_ct_le = ft_2_ms(l->content->cur_time, l->content->last_eat);
-	diff_ct_ts = ft_2_ms(l->content->cur_time, l->content->time_start);
-	if ((l->content->last_eat.tv_sec
-			&& diff_ct_le > *l->content->time_to_die && !l->content->fin)
-		|| (l->content->time_start.tv_sec
-			&& !l->content->last_eat.tv_sec
-			&& diff_ct_ts > *l->content->time_to_die && !l->content->fin))
+	long	last_loc;
+	pthread_mutex_lock(&l->mut_prio_l);
+	pthread_mutex_lock(&l->mut_prio_h);
+	pthread_mutex_lock(&l->mut_last_eat);
+	pthread_mutex_unlock(&l->mut_prio_h);
+	last_loc = l->time_last_e;
+	pthread_mutex_unlock(&l->mut_last_eat);
+	pthread_mutex_unlock(&l->mut_prio_l);
+	vars->gen_time_ms = ft_2_ms(vars->cur_time);
+	// printf("!!!!!!time to %ld\n", *l->time_to_die);
+	diff_ct_le = vars->gen_time_ms - last_loc;
+	diff_ct_ts = vars->gen_time_ms - l->time_s;
+	if ((l->last_eat.tv_sec
+			&& diff_ct_le > *l->time_to_die && !l->fin)
+		|| (l->time_start.tv_sec
+			&& !l->last_eat.tv_sec
+			&& diff_ct_ts > *l->time_to_die && !l->fin))
 		return (1);
-	if (*l->content->eat_iter != -1 && *l->content->eat_iter
-		== l->content->c_iter)
+	if (*l->eat_iter != -1 && *l->eat_iter
+		== l->c_iter)
 		return (2);
 	return (0);
 }
 
-long	ft_2_ms(struct timeval time, struct timeval time2)
+long	ft_2_ms(struct timeval time)
 {
-	long	ms;
-	long	ms2;
-
-	ms = time.tv_sec * 1000 + time.tv_usec / 1000;
-	ms2 = time2.tv_sec * 1000 + time2.tv_usec / 1000;
-	return (ms - ms2);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }

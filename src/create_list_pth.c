@@ -15,6 +15,7 @@
 int	ft_create_list(t_vars *vars)
 {
 	t_data	*data;
+	
 	vars->list = malloc(sizeof(t_data *) * vars->num_philo);
 	vars->i = 0;
 	pthread_mutex_init(&vars->mut_stdout, NULL);
@@ -25,34 +26,21 @@ int	ft_create_list(t_vars *vars)
 			data = ft_data(vars->i, vars);
 			if (!data)
 				return (1);
-			// if (!vars->list)
 				vars->list[vars->i - 1] = data;
-			// else if (vars->num_philo > 1)
-			// {
-			// 	vars->temp_tlist = ft_lstnew((t_data *)data);
-			// 	ft_lstadd_back(&vars->list, vars->temp_tlist);
-			// }
-			// printf("%d test %d\n", vars->i, vars->list[vars->i - 1]->id);
 		}
-		// vars->last = ft_lstlast(vars->list);
-		// if (vars->last != vars->list)
-			// vars->last->next = vars->list;
 	}
 	vars->last = vars->list[vars->num_philo - 1];
 	vars->list[vars->num_philo]= vars->list[0];
-	int i = 0;
-	while (i <= vars->num_philo - 1)
-	{
-	vars->list[i]->mut_n = &vars->list[i + 1]->mut;
-	// printf("test %d\n", vars->list[i]->id);
-	i++;
-	}
+	vars->i = -1;
+	while (++vars->i <= vars->num_philo - 1)
+		vars->list[vars->i]->mut_n = &vars->list[vars->i + 1]->mut;
 	return (0);
 }
 
 int	ft_create_pthread(t_vars *vars)
 {
 	pthread_t	temp;
+
 	vars->i = 0;
 	while (++vars->i <= vars->num_philo)
 	{	
@@ -60,7 +48,6 @@ int	ft_create_pthread(t_vars *vars)
 		if (pthread_create(&temp, NULL, ft_philos, (void *)vars->list[vars->i - 1]) != 0)
 			return (1);
 	}
-
 	return (0);
 }
 

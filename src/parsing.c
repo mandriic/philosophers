@@ -22,24 +22,13 @@ void	ft_death(t_vars *vars, t_data *list, long t2)
 	vars->death = 1;
 }
 
-// void	ft_need_eat(t_data *list, t_vars *vars)
-// {
-// 	long	diff;
-
-// 	diff = ft_2_ms(list->last_eat, (list + 1)->last_eat);
-// 	if (list == vars->list[0])
-// 		diff = ft_2_ms(vars->last->last_eat, list->last_eat);
-// 	if (diff > 0 || list->need_eat == -1)
-// 		list->need_eat = 1;
-// }
-
 void	*ft_watcher(void *vars_l)
 {
-	// t_data			*temp_list;
 	t_vars		*vars;
+	int 		i;
+
+	i = 0;
 	vars = (t_vars *)vars_l;
-	// temp_list = ((t_vars *)vars)->list;
-	int i = 0;
 	while (1)
 	{
 		// printf("vars-end%d\n", vars->iters_end);

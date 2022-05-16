@@ -30,6 +30,7 @@ typedef struct s_data
 	int				id;
 	int				pid;
 	struct timeval	last_eat;
+	long			time_s;
 	int				*time_to_eat;
 	int				*time_to_die;
 	int				*time_to_sleep;
@@ -42,17 +43,13 @@ typedef struct s_data
 	struct timeval	cur_time;
 }t_data;
 
-typedef struct s_list
-{
-	t_data			*content;
-	struct s_list	*next;
-}t_list;
 
 typedef struct s_vars
 {
-	t_list			*list;
-	t_list			*temp_tlist;
-	t_list			*last;
+	t_data			**list;
+	t_data			*last;
+	// t_data			*temp_tlist;
+	// t_data			*last;
 	sem_t			*sem;
 	sem_t			*sem4p;
 	int				main_pid;
@@ -70,20 +67,20 @@ typedef struct s_vars
 	long			difcs;
 }t_vars;
 
-void	ft_start_philo(t_vars *vars, t_list *tmp_list, int *i);
-void	ft_print_4norm(t_vars *vars, t_list *tmp_lst);
-void	ft_take_fork(t_vars *vars, t_list *tmp_lst, int *i);
+void	ft_start_philo(t_vars *vars, t_data *tmp_list, int *i);
+void	ft_print_4norm(t_vars *vars, t_data *tmp_lst);
+void	ft_take_fork(t_vars *vars, t_data *tmp_lst, int *i);
 void	ft_create_forks(t_vars *vars);
 void	ft_create_sem(t_vars *vars);
-long	ft_2_ms(struct timeval time, struct timeval time2);
-int		ft_check(t_list *l);
-void	ft_mut_fokrs(t_list *phil_data, int biger);
-void	ft_create_list(t_vars *vars);
+long	ft_2_ms(struct timeval time);
+int		ft_check(t_data *l);
+void	ft_mut_fokrs(t_data *phil_data, int biger);
+int		ft_create_list(t_vars *vars);
 void	my_usleep(int ms);
 t_data	*ft_data(int id, t_vars *vars);
 int		pars_string(t_vars *vars, char **argv);
 int		ft_atoi_bonus(const char *str);
-t_list	*ft_lstlast(t_list *lst);
-void	ft_lstadd_back(t_list **lst, t_list *new);
-t_list	*ft_lstnew(t_data *content);
+// t_data	*ft_lstlast(t_data *lst);
+// void	ft_lstadd_back(t_data **lst, t_data *new);
+// t_data	*ft_lstnew(t_data *content);
 #endif

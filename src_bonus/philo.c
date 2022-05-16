@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+#include <stdlib.h>
 
 t_data	*ft_data(int id, t_vars *vars)
 {
@@ -32,31 +33,35 @@ t_data	*ft_data(int id, t_vars *vars)
 	return (data);
 }
 
-void	ft_create_list(t_vars *vars)
+int	ft_create_list(t_vars *vars)
 {
 	t_data	*data;
-	t_list	*temp;
-
-	vars->i = 1;
+	vars->list = malloc(sizeof(t_data *) * vars->num_philo);
+	int i = 0;
 	if (vars->num_philo != 1)
 	{
-		while (vars->i <= vars->num_philo)
+		while (++i <= vars->num_philo)
 		{
-			data = ft_data(vars->i, vars);
-			if (!vars->list)
-				vars->list = ft_lstnew((t_data *)data);
-			else if (vars->num_philo > 1)
-			{
-				vars->temp_tlist = ft_lstnew((t_data *)data);
-				ft_lstadd_back(&vars->list, vars->temp_tlist);
-			}
-			vars->i++;
+			data = ft_data(i, vars);
+			if (!data)
+				return (1);
+			// if (!vars->list)
+				vars->list[i - 1] = data;
+			// else if (vars->num_philo > 1)
+			// {
+			// 	vars->temp_tlist = ft_lstnew((t_data *)data);
+			// 	ft_lstadd_back(&vars->list, vars->temp_tlist);
+			// }
+			// printf("%d test %d\n", vars->i, vars->list[vars->i - 1]->id);
 		}
-		temp = vars->list;
-		vars->last = ft_lstlast(vars->list);
-		if (vars->last != vars->list)
-			vars->last->next = vars->list;
+		// vars->last = ft_lstlast(vars->list);
+		// if (vars->last != vars->list)
+			// vars->last->next = vars->list;
 	}
+	// vars->last = vars->list[vars->num_philo - 1];
+
+
+	return (0);
 }
 
 int	pars_string(t_vars *vars, char **argv)
@@ -92,14 +97,20 @@ void	my_usleep(int ms)
 {
 	struct timeval	time_start;
 	struct timeval	time_now;
-
+	long diff = 0;
+	long time_s;
+	long time_n;
 	gettimeofday(&time_now, NULL);
 	gettimeofday(&time_start, NULL);
-	while ((time_now.tv_sec - time_start.tv_sec) * 1000
-		+ (time_now.tv_usec - time_start.tv_usec) / 1000 < ms)
+	time_s = ft_2_ms(time_start);
+	while ( diff < ms)
 	{
 		usleep(10);
 		gettimeofday(&time_now, NULL);
+		time_n = ft_2_ms(time_now);
+		diff = time_n - time_s;
+
+
 	}
 }
 
@@ -122,7 +133,18 @@ int	main(int argc, char **argv)
 		printf("time_to_die\t>\t0\n[eats_iter]\t>\t0\n");
 		return (1);
 	}
+
 	ft_create_list(&vars);
+	// write(1, "x\n", 2);
+	// int i = 0;
+
+	// while (i < vars.num_philo)
+	// {
+
+
+
+	// 	 printf("test %d\n", vars.list[i++]->id);
+	// }
 	ft_create_sem(&vars);
 	return (0);
 }

@@ -15,7 +15,7 @@
 int	ft_create_list(t_vars *vars)
 {
 	t_data	*data;
-	vars->list = malloc(sizeof(t_data *) * vars->num_philo + 1);
+	vars->list = malloc(sizeof(t_data *) * vars->num_philo);
 	vars->i = 0;
 	pthread_mutex_init(&vars->mut_stdout, NULL);
 	if (vars->num_philo != 1)

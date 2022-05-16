@@ -30,7 +30,11 @@ typedef struct s_data
 	int				id;
 	int				pid;
 	struct timeval	last_eat;
+	sem_t			*sem4p;
+	pthread_mutex_t	mut_leat;
+	pthread_mutex_t	mut_print;
 	long			time_s;
+	long			time_n;
 	int				*time_to_eat;
 	int				*time_to_die;
 	int				*time_to_sleep;

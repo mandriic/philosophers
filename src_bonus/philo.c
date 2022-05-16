@@ -19,6 +19,7 @@ t_data	*ft_data(int id, t_vars *vars)
 
 	data = malloc(sizeof(t_data));
 	data->id = id;
+	data->sem4p = vars->sem4p;
 	data->time_to_eat = &vars->t_2_eat;
 	data->time_to_die = &vars->t_2_die;
 	data->time_to_sleep = &vars->t_2_slp;
@@ -135,16 +136,7 @@ int	main(int argc, char **argv)
 	}
 
 	ft_create_list(&vars);
-	// write(1, "x\n", 2);
-	// int i = 0;
 
-	// while (i < vars.num_philo)
-	// {
-
-
-
-	// 	 printf("test %d\n", vars.list[i++]->id);
-	// }
 	ft_create_sem(&vars);
 	return (0);
 }

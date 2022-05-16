@@ -14,11 +14,18 @@
 
 void	ft_start_philo(t_vars *vars, t_data *tmp_list, int *i)
 {
+	pthread_mutex_lock(&tmp_list->mut_leat);
 	gettimeofday(&tmp_list->last_eat, NULL);
+	pthread_mutex_unlock(&tmp_list->mut_leat);
+
 	gettimeofday(&tmp_list->time_now, NULL);
+	tmp_list->time_n = ft_2_ms(tmp_list->time_now);
 	sem_wait(vars->sem4p);
-	printf("%ld ms %d eating \n", ft_2_ms(tmp_list->time_now) -
+	pthread_mutex_lock(&tmp_list->mut_print);
+	printf("%ld ms %d eating \n", tmp_list->time_n -
 			tmp_list->time_s, tmp_list->id);
+	pthread_mutex_unlock(&tmp_list->mut_print);
+
 	sem_post(vars->sem4p);
 	my_usleep(*tmp_list->time_to_eat);
 	if (*tmp_list->eat_iter != -1)
@@ -26,75 +33,91 @@ void	ft_start_philo(t_vars *vars, t_data *tmp_list, int *i)
 	sem_post(vars->sem);
 	sem_post(vars->sem);
 	gettimeofday(&tmp_list->time_now, NULL);
+	tmp_list->time_n = ft_2_ms(tmp_list->time_now);
 	sem_wait(vars->sem4p);
-	printf("%ld ms %d sleeping\n", ft_2_ms(tmp_list->time_now) -
+	pthread_mutex_lock(&tmp_list->mut_print);
+	printf("%ld ms %d sleeping\n", tmp_list->time_n -
 			tmp_list->time_s, tmp_list->id);
+	pthread_mutex_unlock(&tmp_list->mut_print);
+	
 	sem_post(vars->sem4p);
 	my_usleep(*tmp_list->time_to_sleep);
 	gettimeofday(&tmp_list->time_now, NULL);
-
+	tmp_list->time_n = ft_2_ms(tmp_list->time_now);
 	sem_wait(vars->sem4p);
-	printf("%ld ms %d thinking\n", ft_2_ms(tmp_list->time_now) -
+	pthread_mutex_lock(&tmp_list->mut_print);
+
+	printf("%ld ms %d thinking\n", tmp_list->time_n -
 			tmp_list->time_s, tmp_list->id);
+	pthread_mutex_unlock(&tmp_list->mut_print);
+	
 	sem_post(vars->sem4p);
 }
 
-void	ft_print_4norm(t_vars *vars, t_data *tmp_lst)
+void	ft_print_4norm(t_vars *vars, t_data *tmp_list)
 {
-	gettimeofday(&tmp_lst->time_now, NULL);
+	gettimeofday(&tmp_list->time_now, NULL);
+	tmp_list->time_n = ft_2_ms(tmp_list->time_now);
 	sem_wait(vars->sem4p);
+	pthread_mutex_lock(&tmp_list->mut_print);
 	printf("%ld ms %d has taken a fork 1 \n",
-		ft_2_ms(tmp_lst->time_now) - tmp_lst->time_s,
-		tmp_lst->id);
+		tmp_list->time_n - tmp_list->time_s,
+		tmp_list->id);
+	pthread_mutex_unlock(&tmp_list->mut_print);
 	sem_post(vars->sem4p);
 	
-	gettimeofday(&tmp_lst->time_now, NULL);
+	gettimeofday(&tmp_list->time_now, NULL);
+	tmp_list->time_n = ft_2_ms(tmp_list->time_now);
 	sem_wait(vars->sem4p);
+	pthread_mutex_lock(&tmp_list->mut_print);
 
 	printf("%ld ms %d has taken a fork 2 \n",
-		ft_2_ms(tmp_lst->time_now) - tmp_lst->time_s,
-		tmp_lst->id);
+		tmp_list->time_n  - tmp_list->time_s,
+		tmp_list->id);
+	pthread_mutex_unlock(&tmp_list->mut_print);
+
 	sem_post(vars->sem4p);
 }
 
-void	ft_take_fork(t_vars *vars, t_data *tmp_lst, int *i)
+void	ft_take_fork(t_vars *vars, t_data *tmp_list, int *i)
 {
 	while (1)
 	{
-		if (*tmp_lst->eat_iter == *i)
+		if (*tmp_list->eat_iter == *i)
 			exit(0);
 		sem_wait(vars->sem);
 		sem_wait(vars->sem);
-		ft_print_4norm(vars, tmp_lst);
-		gettimeofday(&tmp_lst->time_now, NULL);
-		// if (ft_check(tmp_lst) == 1)
+		ft_print_4norm(vars, tmp_list);
+		gettimeofday(&tmp_list->time_now, NULL);
+		// if (ft_check(tmp_list) == 1)
 		// {
 		// 	sem_wait(vars->sem4p);
-		// 	printf("%ld ms %d DIED \n", ft_2_ms(tmp_lst->time_now) -
-		// 			tmp_lst->time_s, tmp_lst->id);
+		// 	printf("%ld ms %d DIED \n", ft_2_ms(tmp_list->time_now) -
+		// 			tmp_list->time_s, tmp_list->id);
 		// 	kill (0, 15);
 		// }
-		ft_start_philo(vars, tmp_lst, i);
+		ft_start_philo(vars, tmp_list, i);
 	}
 }
 void	*ft_watcher(void *philosofer)
 {
-	t_data *tmp_lst;
+	t_data *tmp_list;
 
 	// sleep(5);
-	tmp_lst = philosofer;
+	tmp_list = philosofer;
 	struct timeval loctime;
 	while (1)
 	{
-		if (ft_check(tmp_lst) == 1)
+		if (ft_check(tmp_list) == 1)
 			{
-				// sem_wait(vars->sem4p);
 				gettimeofday(&loctime, NULL);
+				sem_wait(tmp_list->sem4p);
+				pthread_mutex_lock(&tmp_list->mut_print);
 				printf("%ld ms %d DIED \n", ft_2_ms(loctime) -
-						tmp_lst->time_s, tmp_lst->id);
+						tmp_list->time_s, tmp_list->id);
 				kill (0, 15);
 			}
-		my_usleep(1);
+		my_usleep(10);
 	}
 	// return ;
 }
@@ -114,6 +137,8 @@ void	ft_create_forks(t_vars *vars)
 	}
 	i--;
 	// printf("%d i\n", i);
+	pthread_mutex_init(&vars->list[i]->mut_leat, NULL);
+	pthread_mutex_init(&vars->list[i]->mut_print, NULL);
 	pthread_t watcher;
 	pthread_create(&watcher, NULL, ft_watcher, (t_data *) vars->list[i]);
 	gettimeofday(&vars->list[i]->time_start, NULL);

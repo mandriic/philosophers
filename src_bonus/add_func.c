@@ -55,7 +55,10 @@ int	ft_check(t_data *l)
 	// long	loc_time_s;
 	struct timeval loctime;
 
+pthread_mutex_lock(&l->mut_leat);
 	loc_last_e = ft_2_ms(l->last_eat);
+pthread_mutex_unlock(&l->mut_leat);
+
 	gettimeofday(&loctime, NULL);
 	loc_cur_time = ft_2_ms (loctime);
 	diff_ct_le = loc_cur_time - loc_last_e;
